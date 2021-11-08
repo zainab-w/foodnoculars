@@ -29,6 +29,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Foodnoculars">
         <activity
+            android:name=".Settings"
+            android:exported="true" />
+        <activity
             android:name=".Directions"
             android:exported="true" />
         <activity

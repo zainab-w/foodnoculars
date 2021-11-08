@@ -1,27 +1,15 @@
 package com.example.foodnoculars;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 
-import com.example.foodnoculars.Fragments.FavouriteRestaurants;
 import com.example.foodnoculars.Fragments.NearbyRestaurants;
-import com.example.foodnoculars.Fragments.Settings;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class NearbyLocations extends AppCompatActivity {
     //Menu Bar

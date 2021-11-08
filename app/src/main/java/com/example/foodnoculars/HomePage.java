@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class HomePage extends AppCompatActivity {
 
-    Button btnNearbyRestaurants, btnFavRestaurants, btnAllRestaurants;
+    Button btnNearbyRestaurants, btnFavRestaurants, btnSettings, btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +20,8 @@ public class HomePage extends AppCompatActivity {
 
         btnNearbyRestaurants = findViewById(R.id.btnNearbyRestaurants);
         btnFavRestaurants = findViewById(R.id.btnFavRestaurants);
-        btnAllRestaurants = findViewById(R.id.btnAllRestaurants);
+        btnSettings = findViewById(R.id.btnSettings);
+        btnLogout = findViewById(R.id.btnLogout);
 
         btnNearbyRestaurants.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,6 +37,24 @@ public class HomePage extends AppCompatActivity {
                 startActivity(new Intent(HomePage.this, FavouriteLocations.class));
             }
         });
+
+        btnSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(HomePage.this, Settings.class));
+            }
+        });
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(HomePage.this, Login.class));
+            }
+        });
+
 
     }
 }

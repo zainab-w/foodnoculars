@@ -76,6 +76,10 @@ public class Register extends AppCompatActivity {
                     // if the text fields are empty then show the below message.
                     Toast.makeText(Register.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 }
+                else if(!Password.equals(ConfirmPassword)){
+                    Toast.makeText(Register.this,"Password Not matching",Toast.LENGTH_SHORT).show();
+
+                }
                 else
                 {
                 firebaseAuth.createUserWithEmailAndPassword(Email, Password)
