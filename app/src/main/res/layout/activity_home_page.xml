@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomePage"
+    android:background="@drawable/homepage_bg">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+        <include layout="@layout/toolbar1" />
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="3dp"
+            android:background="@color/gold" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnNearbyRestaurants"
+        android:layout_width="323dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="76dp"
+        android:backgroundTint="@color/red"
+        android:text="Nearby Restaurant's"
+        android:textColor="@color/white"
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <Button
+        android:id="@+id/btnFavRestaurants"
+        android:layout_width="323dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="60dp"
+        android:backgroundTint="@color/red"
+        android:text="Favourite Restaurant's"
+        android:textColor="@color/white"
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnNearbyRestaurants" />
+
+    <Button
+        android:id="@+id/btnAllRestaurants"
+        android:layout_width="323dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="60dp"
+        android:backgroundTint="@color/red"
+        android:text="View All Restaurant's"
+        android:textColor="@color/white"
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnFavRestaurants" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
