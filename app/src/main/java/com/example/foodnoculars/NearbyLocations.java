@@ -12,34 +12,16 @@ import android.widget.ImageView;
 import com.example.foodnoculars.Fragments.NearbyRestaurants;
 
 public class NearbyLocations extends AppCompatActivity {
-    //Menu Bar
-    private ImageView btnMenu;
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle abt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby_locations);
-//        btnMenu = findViewById(R.id.bt_menu);
-        drawerLayout = findViewById(R.id.navDrawer);
-//        abt = new ActionBarDrawerToggle(this, drawerLayout,
-//                R.string.open_navigation_drawer, R.string.close_navigation_drawer);
-//        abt.setDrawerIndicatorEnabled(true);
 
-        //drawerLayout.addDrawerListener(abt);
-       // abt.syncState();
+
         replace(new NearbyRestaurants());
 
-        //Menu Bar
-//        MenuBar();
-//        btnMenu.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                drawerLayout.openDrawer(GravityCompat.START);
-//            }
-//
-//        });
+
     }
 
     private void replace(NearbyRestaurants nearbyRestaurants) {
@@ -47,7 +29,10 @@ public class NearbyLocations extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout,nearbyRestaurants);
         fragmentTransaction.commit();
-//    }
+   }
+
+
+   //menu bar code
 //    private void replace(FavouriteRestaurants favouriteRestaurants) {
 //        FragmentManager fragmentManager = getSupportFragmentManager();
 //        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -104,5 +89,5 @@ public class NearbyLocations extends AppCompatActivity {
 //                return true;
 //            }
 //        });
-    }
+
 }

@@ -104,8 +104,8 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
     private AppPermissions appPermissions;
 
     private FirebaseAuth firebaseAuth;
-    private DatabaseReference locationReference;
-    private DatabaseReference userLocationReference;
+    private DatabaseReference locationReference,trafficReference, userLocationReference,mapTypeReference;
+
 
     private PlaceModel selectedPlaceModel;
     private SavedRestaurantModel savedRestaurantModel;
@@ -122,13 +122,31 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
                              Bundle savedInstanceState) {
         binding = FragmentNearbyRestaurantsBinding.inflate(inflater, container, false);
 
+        //References
+
+        //(YouTube ,n.d)
+        //(Firebase, 2019)
+        //(Android Developers, n.d.)
+        //(GeeksforGeeks, 2020)
+        //(Stack Overflow, n.d.)
+        //(CodeProject, 2016)
+        //(Google Developers, n.d.)
+
+
         //Firebase
         firebaseAuth = FirebaseAuth.getInstance();
         locationReference = FirebaseDatabase.getInstance().getReference("Places");
         userLocationReference = FirebaseDatabase.getInstance().getReference("Users")
                 .child(firebaseAuth.getUid())
                 .child("Saved Restaurants");
-
+        trafficReference = FirebaseDatabase.getInstance().getReference("Users")
+                .child(firebaseAuth.getUid())
+                .child("Settings")
+                .child("Display traffic");
+        mapTypeReference = FirebaseDatabase.getInstance().getReference("Users")
+                .child(firebaseAuth.getUid())
+                .child("Settings")
+                .child("Map type");
 
         appPermissions = new AppPermissions();
         retrofitAPI = RetrofitClient.getRetrofitClient().create(RetrofitAPI.class);
@@ -147,11 +165,13 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
                 if (mGoogleMap != null) {
                     mGoogleMap.setTrafficEnabled(false);
                     isTrafficEnable = false;
+                    trafficReference.setValue("Off");
                 }
             } else {
                 if (mGoogleMap != null) {
                     mGoogleMap.setTrafficEnabled(true);
                     isTrafficEnable = true;
+                    trafficReference.setValue("On");
                 }
             }
 
@@ -167,20 +187,20 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
             popupMenu.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
                     case R.id.btnNormal:
-//                        String mapType = "GoogleMap.MAP_TYPE_NORMAL";
-//                        saveMapDisplay(mapType);
+                        mapTypeReference.setValue("Normal");
                         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                         break;
 
-                    case R.id.btnSatellite:
+                    case R.id.btnTerrain:
+                        mapTypeReference.setValue("Terrain");
+                        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                        break;
 
+                    case R.id.btnSatellite:
+                        mapTypeReference.setValue("Satellite");
                         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
                         break;
 
-                    case R.id.btnTerrain:
-
-                        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                        break;
                 }
                 return true;
             });
@@ -548,7 +568,7 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
                                 googlePlaceModel.getGeometry().getLocation().getLat(),
                                 googlePlaceModel.getGeometry().getLocation().getLng());
 
-                        saveLocation(savedRestaurantModel);
+                        saveLocationInFirebase(savedRestaurantModel);
                     }
 
                     saveUserLocation(googlePlaceModel.getPlaceId());
@@ -576,7 +596,7 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
         Snackbar.make(binding.getRoot(), "Location Saved", Snackbar.LENGTH_LONG).show();
     }
 
-    private void saveLocation(SavedRestaurantModel savedRestaurantModel) {
+    private void saveLocationInFirebase(SavedRestaurantModel savedRestaurantModel) {
         locationReference.child(savedRestaurantModel.getPlaceId()).setValue(savedRestaurantModel);
     }
 
@@ -592,7 +612,6 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
         intent.putExtra("lng", lng);
 
         startActivity(intent);
-
     }
 
 
@@ -607,11 +626,9 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String placeId = ds.getValue(String.class);
                         userSavedLocationId.add(placeId);
-
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -645,35 +662,6 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
                 }).show();
 
     }
-    private String saveMapDisplay(String mapType) {
-
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-            .child(firebaseAuth.getUid()).child("Map type");
-
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        String mapType = ds.getValue(String.class);
-                    }
-                }
-                else if (!snapshot.exists())
-                {
-                    Task<Void> databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-                            .child(firebaseAuth.getUid()).child("Map type").setValue(mapType);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, error.getMessage());
-            }
-        });
-
-        return mapType;
-    }
-
 
     @Override
     public void onPause() {

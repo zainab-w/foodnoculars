@@ -54,9 +54,6 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".Maps"
-            android:exported="true" />
-        <activity
             android:name=".ForgetPassword"
             android:exported="true" />
 
