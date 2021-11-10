@@ -14,6 +14,12 @@
     <string name="MapView">Map View</string>
     <string name="getUserLocation">User Location</string>
     <string name="traffic">Traffic</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="noculars">Noculars</string>
+    <string name="food">FOOD</string>
+    <string name="email">Email</string>
 
 
 </resources>

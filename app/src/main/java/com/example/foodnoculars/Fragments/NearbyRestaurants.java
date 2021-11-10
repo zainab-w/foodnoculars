@@ -1,6 +1,9 @@
 package com.example.foodnoculars.Fragments;
 
+import static android.content.ContentValues.TAG;
+
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -100,7 +104,7 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
     private AppPermissions appPermissions;
 
     private FirebaseAuth firebaseAuth;
-    private DatabaseReference locationReference ;
+    private DatabaseReference locationReference;
     private DatabaseReference userLocationReference;
 
     private PlaceModel selectedPlaceModel;
@@ -110,13 +114,8 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
     private RetrofitAPI retrofitAPI;
     private PlaceInfoWindowAdapter placeInfoWindowAdapter;
 
-
-
     private ArrayList<String> userSavedLocationId;
     private List<GooglePlaceModel> googlePlaceModelList;
-
-
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -158,6 +157,7 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
 
         });
 
+
         //Change map type
         binding.btnMapType.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(requireContext(), view);
@@ -167,14 +167,18 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
             popupMenu.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
                     case R.id.btnNormal:
+//                        String mapType = "GoogleMap.MAP_TYPE_NORMAL";
+//                        saveMapDisplay(mapType);
                         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                         break;
 
                     case R.id.btnSatellite:
+
                         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
                         break;
 
                     case R.id.btnTerrain:
+
                         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
                         break;
                 }
@@ -202,6 +206,7 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
 
 
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -212,7 +217,6 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
         mapFragment.getMapAsync(this);
 
         for (PlaceModel placeModel : AllConstant.placesName) {
-
             Chip chip = new Chip(requireContext());
             chip.setText(placeModel.getName());
             chip.setId(placeModel.getId());
@@ -222,10 +226,9 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
             chip.setChipIcon(ResourcesCompat.getDrawable(getResources(), placeModel.getDrawableId(), null));
             chip.setCheckable(true);
             chip.setCheckedIconVisible(false);
-
             binding.placesGroup.addView(chip);
         }
-       // saveUserLocationToFirebase();
+        // saveUserLocationToFirebase();
         setUpRecyclerView();
         getUserSavedLocations();
 
@@ -235,10 +238,7 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
 //                .child(firebaseAuth.getUid()).child("User location");
 //
 //    }
-    private void setupLocClient() {
-        fusedLocationProviderClient =
-                LocationServices.getFusedLocationProviderClient(requireContext());
-    }
+
 
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
@@ -255,19 +255,26 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
 
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-        binding.currentLocation.setOnClickListener(currentLocation -> getCurrentLocation());
-        if (appPermissions.isLocationOk(requireContext()))
-        {
+        //binding.currentLocation.setOnClickListener(currentLocation -> getCurrentLocation());
+        if (appPermissions.isLocationOk(requireContext())) {
             isLocationPermissionOk = true;
-            setUpGoogleMap();
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mGoogleMap.setMyLocationEnabled(true);
+            mGoogleMap.setOnMarkerClickListener(this);
+            mGoogleMap.getUiSettings().setTiltGesturesEnabled(true);
+            setUpLocationUpdate();
         }
         else if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
             new AlertDialog.Builder(requireContext())
                     .setTitle("Location Permission")
-                    .setMessage("Near me required location permission to show you near by places")
+                    .setMessage("Allow Foodnoculars to access your location while you are using this app?")
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                             requestLocation();
                         }
                     })
@@ -278,46 +285,19 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == AllConstant.LOCATION_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                isLocationPermissionOk = true;
-                setUpGoogleMap();
-            } else {
-                isLocationPermissionOk = false;
-                Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void setUpGoogleMap() {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            isLocationPermissionOk = false;
-            return;
-        }
-        mGoogleMap.setMyLocationEnabled(true);
-        mGoogleMap.getUiSettings().setTiltGesturesEnabled(true);
-        mGoogleMap.setOnMarkerClickListener(this);
-
-        setUpLocationUpdate();
-    }
 
     private void setUpLocationUpdate() {
 
         locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10000);
+        locationRequest.setInterval(9000);
         locationRequest.setFastestInterval(5000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult != null) {
                     for (Location location : locationResult.getLocations()) {
-                        Log.d("TAG", "onLocationResult: " + location.getLongitude() + " " + location.getLatitude());
                     }
                 }
                 super.onLocationResult(locationResult);
@@ -328,11 +308,12 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
         startLocationUpdates();
     }
 
+
     private void startLocationUpdates() {
 
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            isLocationPermissionOk = true;
+            isLocationPermissionOk = false;
             return;
         }
 
@@ -394,22 +375,20 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
 
     }
 
-//    private void stopLocationUpdate() {
-//        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-//        Log.d("TAG", "stopLocationUpdate: Location Update stop");
-//    }
+    private void stopLocationUpdate() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
 
+    @SuppressLint("InlinedApi")
     private void requestLocation() {
-
         requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
-                , Manifest.permission.ACCESS_BACKGROUND_LOCATION},
-                AllConstant.LOCATION_REQUEST_CODE);
+                , Manifest.permission.ACCESS_BACKGROUND_LOCATION}, AllConstant.LOCATION_REQUEST_CODE);
+
     }
 
     private void getPlaces(String placeName) {
 
         if (isLocationPermissionOk) {
-
 
             //loadingDialog.startLoading();
             String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="
@@ -466,21 +445,16 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
 
                                 }
                             }
-
                         }
                         else
                         {
 
                             Toast.makeText(requireContext(), "Error : " + response.errorBody(), Toast.LENGTH_SHORT).show();
                         }
-
-                        //loadingDialog.stopLoading();
-
                     }
 
                     @Override
                     public void onFailure(Call<GoogleResponseModel> call, Throwable t) {
-
                         Log.d("TAG", "onFailure: " + t);
                     }
                 });
@@ -504,7 +478,7 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
 
         Drawable background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location);
         background.setTint(getResources().getColor(R.color.quantum_googred900, null));
-        background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
+        background.setBounds(0, 0, 70, 70);
         Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(),
                 Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
@@ -671,27 +645,54 @@ public class NearbyRestaurants extends Fragment implements OnMapReadyCallback,
                 }).show();
 
     }
+    private String saveMapDisplay(String mapType) {
 
-//
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//
-//        if (fusedLocationProviderClient != null)
-//            stopLocationUpdate();
-//    }
-//
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//
-//        if (fusedLocationProviderClient != null) {
-//
-//            startLocationUpdates();
-//            if (currentMarker != null) {
-//                currentMarker.remove();
-//            }
-//        }
-//    }
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+            .child(firebaseAuth.getUid()).child("Map type");
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        String mapType = ds.getValue(String.class);
+                    }
+                }
+                else if (!snapshot.exists())
+                {
+                    Task<Void> databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+                            .child(firebaseAuth.getUid()).child("Map type").setValue(mapType);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, error.getMessage());
+            }
+        });
+
+        return mapType;
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (fusedLocationProviderClient != null)
+            stopLocationUpdate();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (fusedLocationProviderClient != null) {
+
+            startLocationUpdates();
+            if (currentMarker != null) {
+                currentMarker.remove();
+            }
+        }
+    }
 }

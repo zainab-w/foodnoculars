@@ -19,16 +19,7 @@
         android:id="@+id/bottom_sheet"
         layout="@layout/directions_sheet_bottom"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/enableTraffic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|end"
-        android:layout_marginEnd="15dp"
-        android:src="@drawable/ic_traffic"
-        app:backgroundTint="@color/white"
-        app:fabCustomSize="40dp"
-        app:tint="@color/black" />
+
 
     <LinearLayout
         android:layout_width="match_parent"

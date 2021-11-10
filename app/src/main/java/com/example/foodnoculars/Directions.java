@@ -102,19 +102,6 @@ public class Directions extends AppCompatActivity implements OnMapReadyCallback 
         mapFragment.getMapAsync(this);
 
 
-        binding.enableTraffic.setOnClickListener(view -> {
-            if (isTrafficEnable) {
-                if (mGoogleMap != null) {
-                    mGoogleMap.setTrafficEnabled(false);
-                    isTrafficEnable = false;
-                }
-            } else {
-                if (mGoogleMap != null) {
-                    mGoogleMap.setTrafficEnabled(true);
-                    isTrafficEnable = true;
-                }
-            }
-        });
 
         binding.travelMode.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
             @Override
@@ -188,7 +175,7 @@ public class Directions extends AppCompatActivity implements OnMapReadyCallback 
                                 List<LatLng> stepList = new ArrayList<>();
 
                                 PolylineOptions options = new PolylineOptions()
-                                        .width(25)
+                                        .width(15)
                                         .color(Color.BLUE)
                                         .geodesic(true)
                                         .clickable(true)
