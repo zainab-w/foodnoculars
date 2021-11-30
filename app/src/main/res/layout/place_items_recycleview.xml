@@ -7,11 +7,11 @@
 
         <variable
             name="googlePlaceModel"
-            type="com.example.foodnoculars.GooglePlaceModel" />
+            type="com.application.foodnoculars.GooglePlaceModel" />
 
         <variable
             name="listener"
-            type="com.example.foodnoculars.NearbyPlaceInterface" />
+            type="com.application.foodnoculars.NearbyPlaceInterface" />
 
 
     </data>
@@ -64,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:ellipsize="end"
-                    android:maxLines="2"
+                    android:maxLines="1"
                     android:text="@{googlePlaceModel.vicinity!=null?googlePlaceModel.vicinity:`No Address`,default=`Place Address`}"
                     android:textColor="@color/black" />
 
@@ -97,8 +97,8 @@
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toEndOf="@+id/txtPlaceDRating"
                         android:layout_marginTop="7dp"
+                        android:layout_toEndOf="@+id/txtPlaceDRating"
                         android:paddingStart="5dp"
                         android:paddingEnd="1dp"
                         android:text="@{googlePlaceModel.userRatingsTotal!=null?`(`+String.valueOf(googlePlaceModel.userRatingsTotal)+`)`:``,default=`(123)`}"

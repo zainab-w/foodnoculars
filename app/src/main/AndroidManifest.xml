@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.foodnoculars">
+    package="com.application.foodnoculars">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -19,7 +19,7 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
 
     <application
         android:allowBackup="true"
@@ -30,16 +30,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Foodnoculars">
         <activity
-            android:name=".Settings"
+            android:name="com.application.foodnoculars.Settings"
             android:exported="true" />
         <activity
-            android:name=".Directions"
+            android:name="com.application.foodnoculars.Directions"
             android:exported="true" />
         <activity
-            android:name=".FavouriteLocations"
+            android:name="com.application.foodnoculars.FavouriteLocations"
             android:exported="true" />
         <activity
-            android:name=".NearbyLocations"
+            android:name="com.application.foodnoculars.NearbyLocations"
             android:exported="true" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -54,7 +54,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".ForgetPassword"
+            android:name="com.application.foodnoculars.ForgetPassword"
             android:exported="true" />
 
         <meta-data
@@ -62,16 +62,16 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".HomePage"
+            android:name="com.application.foodnoculars.HomePage"
             android:exported="true" />
         <activity
-            android:name=".Register"
+            android:name="com.application.foodnoculars.Register"
             android:exported="true" />
         <activity
-            android:name=".Login"
+            android:name="com.application.foodnoculars.Login"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.application.foodnoculars.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

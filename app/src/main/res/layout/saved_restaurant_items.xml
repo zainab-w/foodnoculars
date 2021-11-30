@@ -6,11 +6,11 @@
 
         <variable
             name="savedRestaurantModel"
-            type="com.example.foodnoculars.SavedRestaurantModel" />
+            type="com.application.foodnoculars.SavedRestaurantModel" />
 
         <variable
             name="listener"
-            type="com.example.foodnoculars.SavedRestaurantInterface" />
+            type="com.application.foodnoculars.SavedRestaurantInterface" />
     </data>
 
     <androidx.cardview.widget.CardView

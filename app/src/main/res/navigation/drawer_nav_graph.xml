@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/btnFavRestaurants"
-        android:name="com.example.foodnoculars.Fragments.FavouriteRestaurants"
+        android:name="com.application.foodnoculars.Fragments.FavouriteRestaurants"
         android:label="fragment_favourite_restaurants"
         tools:layout="@layout/fragment_favourite_restaurants" />
     <fragment
         android:id="@+id/btnSettings"
-        android:name="com.example.foodnoculars.Fragments.Settings"
+        android:name="com.application.foodnoculars.Fragments.Settings"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/btnNearbyRestaurants"
-        android:name="com.example.foodnoculars.Fragments.NearbyRestaurants"
+        android:name="com.application.foodnoculars.Fragments.NearbyRestaurants"
         android:label="fragment_nearby_restaurants"
         tools:layout="@layout/fragment_nearby_restaurants" />
 </navigation>
